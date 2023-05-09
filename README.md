@@ -5,8 +5,8 @@ binary with your environment.
 
 ## Versions
 
-* Buildpack:   `0.2`
-* wkhtmltopdf: `0.12.3` by default
+* Buildpack:   `0.3`
+* wkhtmltopdf: `0.12.6` by default
 
 ## Usage
 
@@ -38,7 +38,7 @@ $ heroku repo:purge_cache -a appname
 ## Troubleshooting
 
 If you run into issues when trying to deploy with this buildpack, make sure your
-app is running on `cedar-14` or `heroku-16`. You can check this with:
+app is running on >=`heroku-18`. You can check this with:
 
 ```bash
 $ heroku stack
