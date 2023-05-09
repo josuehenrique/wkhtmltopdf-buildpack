@@ -19,7 +19,7 @@ else
 fi
 
 WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/archive/refs/tags/${WKHTMLTOPDF_VERSION}.tar.gz"
-WKHTMLTOPDF_TAR="$CACHE_DIR/wkhtmltox.tar.gz"
+WKHTMLTOPDF_TAR="${WKHTMLTOPDF_VERSION}.tar.gz"
 WKHTMLTOPDF_PATH="$TMP_PATH/wkhtmltox"
 WKHTMLTOPDF_BINARIES="$WKHTMLTOPDF_PATH/bin"
 WKHTMLTOPDF_LIBS="$WKHTMLTOPDF_PATH/lib"
@@ -27,15 +27,12 @@ WKHTMLTOPDF_LIBS="$WKHTMLTOPDF_PATH/lib"
 BIN_DIR=$(cd $(dirname $0); pwd)
 FONTS_DIR=$(cd "$BIN_DIR/../fonts"; pwd)
 
-if [ -f $WKHTMLTOPDF_TAR ]; then
-  echo "-----> Using wkhtmltopdf tar from cache"
-else
-  echo "-----> Downloading wkhtmltopdf tar"
-  wget $WKHTMLTOPDF_URL
-fi
+echo "-----> Downloading wkhtmltopdf tar"
+wget $WKHTMLTOPDF_URL
+
 
 echo "-----> Unpacking tar"
-tar -xf $WKHTMLTOPDF_TAR -C $TMP_PATH
+tar -xf $WKHTMLTOPDF_TAR
 
 echo "-----> Setting permissions"
 chmod +x $WKHTMLTOPDF_BINARIES/*
