@@ -31,7 +31,7 @@ echo "-----> Downloading wkhtmltopdf tar"
 wget $WKHTMLTOPDF_URL
 
 echo "-----> Unpacking tar"
-tar -xf $WKHTMLTOPDF_PATH
+tar -xf $WKHTMLTOPDF_TAR
 
 echo "-----> Setting permissions"
 chmod +x $WKHTMLTOPDF_BINARIES/*
