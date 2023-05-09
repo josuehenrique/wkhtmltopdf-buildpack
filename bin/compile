@@ -42,8 +42,14 @@ fi
 if [[ -f "$ENV_DIR/WKHTMLTOPDF_VERSION" ]]; then
   WKHTMLTOPDF_VERSION=$(cat "$ENV_DIR/WKHTMLTOPDF_VERSION")
 else
-  WKHTMLTOPDF_VERSION="0.12.6-2"
+  WKHTMLTOPDF_VERSION="0.12.6-1"
 fi
 
-topic "Installing wkhtmltopdf -v $WKHTMLTOPDF_VERSION."
-apt install wkhtmltopdf=$WKHTMLTOPDF_VERSION -y
+PKG_NAME=wkhtmltox_$WKHTMLTOPDF_VERSION.focal_amd64.deb
+PKG_URL=https://github.com/wkhtmltopdf/packaging/releases/download/$WKHTMLTOPDF_VERSION/$PKG_NAME
+
+topic "DOWNLOADING wkhtmltopdf -v $WKHTMLTOPDF_VERSION from $PKG_URL"
+wget $PKG_URL
+
+topic "INSTALING $PKG_NAME"
+dpkg -i PKG_NAME
