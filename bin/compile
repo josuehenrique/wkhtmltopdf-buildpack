@@ -19,7 +19,7 @@ function error() {
   exit 1
 }
 
-function topic() {channel
+function topic() {
   echo "-----> $*"
 }
 
@@ -42,7 +42,7 @@ fi
 if [[ -f "$ENV_DIR/WKHTMLTOPDF_VERSION" ]]; then
   WKHTMLTOPDF_VERSION=$(cat "$ENV_DIR/WKHTMLTOPDF_VERSION")
 else
-  WKHTMLTOPDF_VERSION="0.12.6"
+  WKHTMLTOPDF_VERSION="0.12.6-2"
 fi
 
 topic "Installing wkhtmltopdf -v $WKHTMLTOPDF_VERSION."
@@ -57,7 +57,7 @@ APT_OPTIONS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state
 
 topic "Updating apt caches"
 apt-get $APT_OPTIONS update | indent
-
 mkdir -p $BUILD_DIR/.apt
+apt update -y 
 
 apt install wkhtmltopdf=0.12.6 -y
