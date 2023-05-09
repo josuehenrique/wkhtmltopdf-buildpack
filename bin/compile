@@ -20,16 +20,14 @@ fi
 
 WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/archive/refs/tags/${WKHTMLTOPDF_VERSION}.tar.gz"
 WKHTMLTOPDF_TAR="${WKHTMLTOPDF_VERSION}.tar.gz"
-WKHTMLTOPDF_PATH="$TMP_PATH/wkhtmltox"
-WKHTMLTOPDF_BINARIES="$WKHTMLTOPDF_PATH/bin"
-WKHTMLTOPDF_LIBS="$WKHTMLTOPDF_PATH/lib"
+WKHTMLTOPDF_BINARIES="$WKHTMLTOPDF_TAR/bin"
+WKHTMLTOPDF_LIBS="$WKHTMLTOPDF_TAR/lib"
 
 BIN_DIR=$(cd $(dirname $0); pwd)
 FONTS_DIR=$(cd "$BIN_DIR/../fonts"; pwd)
 
 echo "-----> Downloading wkhtmltopdf tar"
 wget $WKHTMLTOPDF_URL
-
 
 echo "-----> Unpacking tar"
 tar -xf $WKHTMLTOPDF_TAR
@@ -44,7 +42,7 @@ echo "-----> Moving libs to the right place"
 mv $WKHTMLTOPDF_LIBS/* $LIB_PATH/
 
 echo "-----> Cleaning up"
-rm -rf $WKHTMLTOPDF_PATH
+rm -rf $WKHTMLTOPDF_TAR
 
 echo "-----> Installing fonts"
 mkdir -p $1/.fonts
