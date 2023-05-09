@@ -66,7 +66,7 @@ PACKAGE=https://github.com/wkhtmltopdf/packaging/releases/download/$WKHTMLTOPDF_
 mkdir -p $BUILD_DIR/.apt
 
 wget $PACKAGE
-mv $PACKAGE $APT_CACHE_DIR/archives/
+mv $PKG_NAME $APT_CACHE_DIR/archives/
 
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   topic "Installing $(basename $DEB)"
