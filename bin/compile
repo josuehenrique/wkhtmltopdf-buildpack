@@ -63,10 +63,10 @@ apt-get $APT_OPTIONS update | indent
 PKG_NAME=wkhtmltox_$WKHTMLTOPDF_VERSION.focal_amd64.deb
 PACKAGE=https://github.com/wkhtmltopdf/packaging/releases/download/$WKHTMLTOPDF_VERSION/$PKG_NAME
 
-topic "Fetching .debs for $PACKAGE"
-apt-get $APT_OPTIONS -y --force-yes -d install --reinstall $PACKAGE | indent
-
 mkdir -p $BUILD_DIR/.apt
+
+wget $PACKAGE
+mv $PACKAGE $APT_CACHE_DIR/archives/
 
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   topic "Installing $(basename $DEB)"
