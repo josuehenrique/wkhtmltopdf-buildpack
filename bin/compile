@@ -1,16 +1,43 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir>
 
+# fail fast
 set -e
 
+# debug
+# set -x
+
+# parse and derive params
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
-BIN_PATH="$BUILD_DIR/bin"
-LIB_PATH="$BUILD_DIR/vendor/wkhtmltox/lib"
-TMP_PATH="$BUILD_DIR/tmp"
-mkdir -p $CACHE_DIR $BIN_PATH $LIB_PATH $TMP_PATH
+LP_DIR=`cd $(dirname $0); cd ..; pwd`
+
+function error() {
+  echo " !     $*" >&2
+  exit 1
+}
+
+function topic() {channel
+  echo "-----> $*"
+}
+
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+if [ ! -f $CACHE_DIR/PURGED_CACHE_V1 ]; then
+  topic "Purging cache"
+  rm -rf $CACHE_DIR/apt
+  rm -rf $CACHE_DIR/archives
+  rm -rf $CACHE_DIR/lists
+  touch $CACHE_DIR/PURGED_CACHE_V1
+fi
 
 if [[ -f "$ENV_DIR/WKHTMLTOPDF_VERSION" ]]; then
   WKHTMLTOPDF_VERSION=$(cat "$ENV_DIR/WKHTMLTOPDF_VERSION")
@@ -18,36 +45,19 @@ else
   WKHTMLTOPDF_VERSION="0.12.6"
 fi
 
-WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/archive/refs/tags/${WKHTMLTOPDF_VERSION}.tar.gz"
-WKHTMLTOPDF_TAR="${WKHTMLTOPDF_VERSION}.tar.gz"
-WKHTMLTOPDF_PATH="wkhtmltopdf-${WKHTMLTOPDF_VERSION}"
-WKHTMLTOPDF_BINARIES="$WKHTMLTOPDF_PATH/bin"
-WKHTMLTOPDF_LIBS="$WKHTMLTOPDF_PATH/lib"
+topic "Installing wkhtmltopdf -v $WKHTMLTOPDF_VERSION."
 
-BIN_DIR=$(cd $(dirname $0); pwd)
-FONTS_DIR=$(cd "$BIN_DIR/../fonts"; pwd)
+APT_CACHE_DIR="$CACHE_DIR/apt/cache"
+APT_STATE_DIR="$CACHE_DIR/apt/state"
 
-echo "-----> Downloading wkhtmltopdf tar"
-wget $WKHTMLTOPDF_URL
+mkdir -p "$APT_CACHE_DIR/archives/partial"
+mkdir -p "$APT_STATE_DIR/lists/partial"
 
-echo "-----> Unpacking tar"
-tar -xf $WKHTMLTOPDF_TAR
+APT_OPTIONS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state=$APT_STATE_DIR"
 
-echo "-----> Setting permissions"
-chmod +x $WKHTMLTOPDF_BINARIES/*
+topic "Updating apt caches"
+apt-get $APT_OPTIONS update | indent
 
-echo "-----> Moving binaries to the right place"
-mv $WKHTMLTOPDF_BINARIES/* $BIN_PATH/
+mkdir -p $BUILD_DIR/.apt
 
-echo "-----> Moving libs to the right place"
-mv $WKHTMLTOPDF_LIBS/* $LIB_PATH/
-
-echo "-----> Cleaning up"
-rm -rf $WKHTMLTOPDF_PATH
-rm -rf $WKHTMLTOPDF_TAR
-
-echo "-----> Installing fonts"
-mkdir -p $1/.fonts
-ls $FONTS_DIR
-cp $FONTS_DIR/* $1/.fonts/
-fc-cache -f $1/.fonts
+apt install wkhtmltopdf=0.12.6 -y
